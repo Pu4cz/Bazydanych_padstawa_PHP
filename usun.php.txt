@@ -1,0 +1,21 @@
+<html>
+<head>
+<title>Usun osobe</title>
+</head>
+<body>
+<h1>Usuwamy</h1>
+<?php
+$id = $_POST['idos'];
+$dbh = pg_connect("dbname = zadphp_s160507 user = s160507 password = mojehaslo host = localhost")
+or die("blad");
+$query = "DELETE FROM zlecenie where kto_jedzie = '$id'";
+$wynik = pg_query($query);
+$ls = pg_affected_rows($wynik);
+echo " Usunieto $ls kierowce <br/> \n";
+pg_close($dbh);
+echo "<form action = spedycja.php method=post>
+<input type = submit name = powrot value = Powrot>
+</form>";
+?>
+</body>
+</html>

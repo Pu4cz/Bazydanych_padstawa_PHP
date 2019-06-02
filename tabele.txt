@@ -1,0 +1,18 @@
+CREATE TABLE kierowca (
+ imie varchar(20) not null,
+ nazwisko varchar(40) not null,
+ nr_dowodu char(10),
+ id_kierowcy serial primary key);
+
+CREATE TABLE samochod(
+marka varchar(40) not null,
+numer serial primary key);
+
+CREATE TABLE zlecenie(
+ kto_jedzie int not null REFERENCES klient ON DELETE
+RESTRICT ON UPDATE RESTRICT, 
+ czym_jedzie int not null REFERENCES samochod ON DELETE
+RESTRICT ON UPDATE CASCADE,
+ d_zlecenia timestamp default now(),
+ primary key(kto_jedzie, czym_jedzie,
+d_zlecenia) );

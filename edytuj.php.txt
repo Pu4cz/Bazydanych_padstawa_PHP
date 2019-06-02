@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>Edytuj zlecenie</title>
+<body>
+<h1>Edytuje zlecenie</h1>
+<?php
+$id = $_POST['idos'];
+$dbh = pg_connect("dbname =zadphp_s160507 user = s160507 password = mojehaslo host = localhost")
+or die("blad");
+echo " <form method = POST>
+Imie: <input type = text name=imie> <br/>
+Samochod: <label><input type = radio name = samochod value = 1 checked = checked>1</label>
+<label><input type = radio name = samochod value = 2>2</label>
+<label><input type = radio name = samochod value = 3>3</label> <br/>
+Nazwisko: <input type = text name = nazwisko> <br/>
+Nr_dowodu: <input type = text  name=nr_dowodu> <br/>
+<input type = hidden name = idos value = $id>
+<input type = submit name = zmien value = Zmien>
+</form>";
+
+$imie = $_POST['imie'];
+$samochod = $_POST['samochod'];
+$nazwisko = $_POST['nazwisko'];
+$nr = $_POST['nr_dowodu'];
+if ($imie == null)
+{
+$query = "select kierowca.imie from kierowca where id_kierowcy = '$id'";
+$wynik = pg_query($query);
+$imie = pg_fetch_result($wynik,0,0);
+}
+if ($samochod == null)
+{
+$query = "select czym_jedzie from zlecenie where kto_jedzie ='$id'";
+$wynik = pg_query($query);
+$samochod = pg_fetch_result($wynik,0,0);
+}
+if ($nazwisko == null)
+{
+$query = "select kierowca.nazwisko from kierowca where id_kierowcy = '$id'";
+$wynik = pg_query($query);
+$nazwisko = pg_fetch_result($wynik,0,0);
+}
+if ($nr == null)
+{
+$query = "select kierowca.nr_dowodu from kierowca where id_kierowcy = '$id'";
+$wynik = pg_query($query);
+$nr = pg_fetch_result($wynik,0,0);
+}
+$query = "update kierowca set imie = '$imie',
+nazwisko = '$nazwisko', nr_dowodu = '$nr' where id_kierowcy = '$id'";
+$wynik = pg_query($query);
+$query3 = "update zlecenie set czym_jedzie = '$samochod' where kto_jedzie = '$id'";
+$wynik3 =pg_query($query3);
+echo "<form action = spedycja.php method post>
+<input type=submit name = powrot value = Powrot>
+</form>";
+pg_close($dbh);
+?>
+</body>
+</html>

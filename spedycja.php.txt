@@ -1,0 +1,71 @@
+<html>
+<head>
+<title>firmaspedycyjna</title>
+</head>
+<body>
+<h1>zlecenia</h1>
+<?php
+$dbh = pg_connect("dbname=zadphp_s160507 user=s160507 password=mojehaslo host=localhost")
+or die("blad");
+$query = "Select kierowca.imie, kierowca.nazwisko, kierowca.nr_dowodu, samochod.marka, kierowca.id_kierowcy, zlecenie.d_zlecenia from kierowca, $
+where kierowca.id_kierowcy = zlecenie.kto_jedzie and samochod.numer = zlecenie.czym_jedzie";
+$wynik = pg_query($dbh,$query);
+$liczba_kolumn = pg_num_fields($wynik);
+$liczba_wierszy = pg_num_rows($wynik);
+echo "<table border width=1>";
+ echo "<tr>";
+ for($k = 0; $k < $liczba_kolumn; $k++)
+ {
+  echo "<td>";
+  echo pg_field_name($wynik, $k);
+  echo "</td>";;
+ }
+ echo "<td>edytuj</td><td>usun</td>";
+ echo "</tr>";
+ for($w = 0; $w < $liczba_wierszy; $w++)
+ {
+  echo "<tr>";
+  for($k = 0; $k < $liczba_kolumn; $k++)
+  {
+  echo "<td>";
+   echo pg_fetch_result($wynik, $w, $k);
+   echo "</td>";
+ }
+  $idos = pg_fetch_result($wynik, $w, $k-2);
+  echo "<td>";
+  echo "<form action = edytuj.php method = POST>
+   <input type = hidden name = idos value = $idos>
+   <input type = hidden name = imie>
+   <input type = hidden name = nazwisko>
+   <input type = hidden name = samochod>
+   <input type = hidden name = nr_dowodu>
+   <input type = submit name = edytuj value = Edytuj></form>";
+  echo "</td>";
+  echo "<td>";
+  echo "<form action = usun.php method = POST>
+   <input type = hidden name = idos value = $idos>
+   <input type = submit name = usun value = Usun></form>";
+  echo "</td>";
+  echo "</tr>";
+ }
+echo "</table>";
+echo "<FORM action = dodaj.php method = POST>
+Dodaj nowe zlecenie do bazy <br />
+Imie: <input type = text name = imie> </br>
+<label>samochod: <input type = radio name = samochod value = 1>1</label>
+<label><input type = radio name = samochod value = 2>2</label>
+<label><input type = radio name = samochod value = 3>3</label> </br>
+Nazwisko: <input type = text name = nazwisko> </br>
+Nr_dowodu: <input type = text name = nr_dowodu> </br>
+<input type = submit name = Dodaj value = Dodaj>
+</form>";
+pg_close($dbh);
+?>
+</body>
+</html>
+
+
+
+
+
+

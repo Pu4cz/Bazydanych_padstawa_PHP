@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>Dodaj zlecenie</title>
+</head>
+<body>
+<h1>Dodaje zlecenie</h1>
+<?php
+$imie = $_POST['imie'];
+$samochod = $_POST['samochod'];
+$nazwisko = $_POST['nazwisko'];
+$nr = $_POST['nr_dowodu'];
+$dbh = pg_connect("dbname =zadphp_s160507 user = s160507 password = mojehaslo host = localhost")
+or die("blad");
+$query = "insert into kierowca(imie, nazwisko, nr_dowodu) values
+('$imie', '$nazwisko', '$nr')";
+$wynik = pg_query($query);
+$query2 = "insert into zlecenie(kto_jedzie, czym_jedzie) values((select id_kierowcy from kierowca where imie = '$imie'
+and nazwisko = '$nazwisko'),('$samochod'))";
+$wynik2 = pg_query($query2);
+$ls = pg_affected_rows($wynik);
+echo "Dodano $ls zlecenie <br/> \n";
+echo "<form action = spedycja.php method = post>
+<input type = submit name = powrot value = Powrot>
+</form>";
+?>
+</body>
+</html>
